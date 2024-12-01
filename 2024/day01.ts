@@ -1,5 +1,5 @@
 import { getInput } from "../inputs.ts";
-import { Map, List } from "immutable";
+import * as Utils from "../utils.ts";
 
 const input = await getInput(2024, 1);
 
@@ -30,16 +30,14 @@ for (let i = 0; i < list1.length; i++) {
 
 console.log(result);
 
-const grouped = List(list2).groupBy((x) => x);
-const counts = grouped.map((g) => g.size);
+const grouped = Map.groupBy(list2, (x) => x);
+const counts = Utils.mapMap(grouped, (g) => g.length);
 
 let similarity = 0;
 
 for (let i = 0; i < list1.length; i++) {
   const id = list1[i];
-  if (counts.has(id)) {
-    similarity += counts.get(id)! * id;
-  }
+  similarity += Utils.getOrElse(counts, id, 0) * id;
 }
 
 console.log(similarity);
