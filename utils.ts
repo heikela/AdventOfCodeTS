@@ -9,3 +9,21 @@ export function mapMap<K, V, V2>(map: Map<K, V>, f: (v: V) => V2): Map<K, V2> {
   }
   return result;
 }
+
+export function zip<T>(...arrays: T[][]): T[][] {
+  const result: T[][] = [];
+  const len = Math.min(...arrays.map((array) => array.length));
+  for (let i = 0; i < len; i++) {
+    result.push(arrays.map((array) => array[i]));
+  }
+  return result;
+}
+
+export function lines(input: string): string[] {
+  // omit the last line if it's empty
+  return input.trimEnd().split("\n");
+}
+
+export function words(input: string): string[] {
+  return input.split(/\s+/);
+}
