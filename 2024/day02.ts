@@ -64,4 +64,10 @@ function isSafeWithOmission(numbers: number[]) {
   );
 }
 
-console.log(numbers.filter(isSafeWithOmission).length);
+function isSafePart2(numbers: number[]) {
+  // The first one is technically not needed, but it makes it more clear
+  // we're following the required definition
+  return isSafe(numbers) || isSafeWithOmission(numbers);
+}
+
+console.log(numbers.filter(isSafePart2).length);
