@@ -11,3 +11,7 @@ Deno.test(function testZipHandlesUnevenLengths() {
     [2, 5, 7],
   ]);
 });
+
+Deno.test(function testRange() {
+  assertEquals(Utils.range(2, 5), [2, 3, 4, 5, 6]);
+});

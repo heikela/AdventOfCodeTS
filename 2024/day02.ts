@@ -52,13 +52,9 @@ function isSafe(numbers: number[], tolerance: number = 0) {
 
 console.log(numbers.filter(isSafe).length);
 
-function range(start: number, count: number): number[] {
-  return Array.from({ length: count }, (_, i) => start + i);
-}
-
 function isSafeWithOmission(numbers: number[]) {
   return (
-    range(0, numbers.length)
+    Utils.range(0, numbers.length)
       .map((i) => numbers.filter((_, j) => i !== j))
       .filter(isSafe).length > 0
   );

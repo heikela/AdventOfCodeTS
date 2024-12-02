@@ -10,6 +10,10 @@ export function mapMap<K, V, V2>(map: Map<K, V>, f: (v: V) => V2): Map<K, V2> {
   return result;
 }
 
+export function range(start: number, count: number): number[] {
+  return Array.from({ length: count }, (_, i) => start + i);
+}
+
 export function zip<T>(...arrays: T[][]): T[][] {
   const result: T[][] = [];
   const len = Math.min(...arrays.map((array) => array.length));
