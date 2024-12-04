@@ -65,3 +65,34 @@ const result = Utils.range(0, H)
   .reduce<number>((acc, x) => acc + x, 0);
 
 console.log(result);
+
+function detectCrossMas(p: Point): boolean {
+  const topLeftWord = getWord(
+    addPoints(p, Point({ x: -1, y: -1 })),
+    Point({ x: 1, y: 1 }),
+    3
+  );
+  const topRightWord = getWord(
+    addPoints(p, Point({ x: 1, y: -1 })),
+    Point({ x: -1, y: 1 }),
+    3
+  );
+  if (topLeftWord != "MAS" && topLeftWord != "SAM") {
+    return false;
+  }
+  if (topRightWord != "MAS" && topRightWord != "SAM") {
+    return false;
+  }
+  return true;
+}
+
+const result2 = Utils.range(0, H)
+  .flatMap((y) =>
+    Utils.range(0, W).map((x) => {
+      const p = Point({ x, y });
+      return detectCrossMas(p) ? 1 : 0;
+    })
+  )
+  .reduce<number>((acc, x) => acc + x, 0);
+
+console.log(result2);
