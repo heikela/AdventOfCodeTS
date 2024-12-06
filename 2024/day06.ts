@@ -13,6 +13,10 @@ function addPoints(a: Point, b: Point): Point {
   return Point({ x: a.x + b.x, y: a.y + b.y });
 }
 
+function negate(p: Point): Point {
+  return Point({ x: -p.x, y: -p.y });
+}
+
 const directions = [
   Point({ x: 0, y: -1 }),
   Point({ x: 1, y: 0 }),
@@ -66,6 +70,18 @@ function nextPosition(pos: Point): Point {
   return addPoints(pos, directions[dirIndex]);
 }
 
+function turnRight(direction: Point): Point {
+  return directions[(dirNumber(direction) + 1) % directions.length];
+}
+
+function dirNumber(dirVector: Point): number {
+  return directions.findIndex((d) => d.equals(dirVector));
+}
+
+function currentDirection(): Point {
+  return directions[dirIndex];
+}
+
 let originalPath = Map<Point, Set<number>>();
 
 while (letters.has(pos)) {
@@ -82,11 +98,18 @@ while (letters.has(pos)) {
 
 console.log(visited.size);
 
-function getsStuck(start: Point, area: Map<Point, string>): boolean {
+function getsStuck(start: Point, newBlock: Point): boolean {
   let visited = Map<Point, Set<number>>();
   let currentPos = start;
   resetDirection();
   let steps = 0;
+
+  if (!originalPath.has(newBlock)) {
+    //    console.log(`Not on original path, skipping`);
+    return false;
+  }
+
+  const area = letters.set(newBlock, "#");
 
   while (
     area.has(currentPos) &&
@@ -118,11 +141,11 @@ for (let y = 0; y < H; y++) {
     if (original == "#" || original == "^") {
       continue;
     }
-    const modified = letters.set(Point({ x, y }), "#");
-    if (getsStuck(start, modified)) {
+    if (getsStuck(start, Point({ x, y }))) {
       result++;
     }
   }
+  console.log(`Row ${y} done`);
 }
 
 console.log(result);
