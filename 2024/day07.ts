@@ -1,8 +1,9 @@
-import { getInput } from "../inputs.ts";
+import { getInput, getTestBlock } from "../inputs.ts";
 
 import * as Utils from "../utils.ts";
 
-const input = await getInput(2024, 7);
+//const input = await getInput(2024, 7);
+const input = await getTestBlock(2024, 7);
 const lines = Utils.lines(input);
 type equation = {
   result: number;

@@ -43,3 +43,34 @@ export async function getInput(year: number, day: number): Promise<string> {
     return input;
   }
 }
+
+async function getTaskHtml(year: number, day: number): Promise<string> {
+  const fileName = `inputs/${year}-day${day}.html`;
+  try {
+    return await Deno.readTextFile(fileName);
+  } catch (e) {
+    console.log(
+      `Fetching task description (with examples) from Advent of Code site`
+    );
+    const html = await fetchWithCookie(
+      `https://adventofcode.com/${year}/day/${day}`
+    );
+    await Deno.writeTextFile(fileName, html);
+    return html;
+  }
+}
+
+export async function getTestBlock(
+  year: number,
+  day: number,
+  blockNumber = 0
+): Promise<string> {
+  const html = await getTaskHtml(year, day);
+  const testBlocks = Array.from(
+    html.matchAll(/<pre><code>((?:.|\n)*?)<\/code><\/pre>/g)
+  );
+  if (testBlocks.length <= blockNumber) {
+    throw new Error("Test block not found");
+  }
+  return testBlocks[blockNumber][1];
+}
