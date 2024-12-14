@@ -58,13 +58,10 @@ function detectCrossMas(p: Point): boolean {
   return true;
 }
 
-const result2 = Utils.range(0, H)
-  .flatMap((y) =>
-    Utils.range(0, W).map((x) => {
-      const p = Point({ x, y });
-      return detectCrossMas(p) ? 1 : 0;
-    })
-  )
+const result2 = Seq(letters.keys())
+  .map((p) => {
+    return detectCrossMas(p) ? 1 : 0;
+  })
   .reduce<number>((acc, x) => acc + x, 0);
 
 console.log(result2);
