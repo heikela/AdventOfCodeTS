@@ -2,16 +2,14 @@ import { getInput, getTestBlock } from "../inputs.ts";
 
 import * as Utils from "../utils.ts";
 
-import { Map, Set, Record, RecordOf } from "immutable";
+import { Map, Set } from "immutable";
 
-//const input = await getInput(2024, 10);
-const input = await getTestBlock(2024, 10, 4);
+import { Point, addPoints, orthogonalNeighbours } from "../point2d.ts";
+
+const input = await getInput(2024, 10);
+//const input = await getTestBlock(2024, 10, 4);
 
 const lines = Utils.lines(input);
-
-type PointProps = { x: number; y: number };
-const Point = Record({ x: 0, y: 0 });
-type Point = RecordOf<PointProps>;
 
 let W = 0;
 let H = 0;
@@ -54,13 +52,8 @@ for (let y = 0; y < H; y++) {
           ends = ends.add(p);
           continue;
         }
-        for (const dir of [
-          Point({ x: 0, y: -1 }),
-          Point({ x: 1, y: 0 }),
-          Point({ x: 0, y: 1 }),
-          Point({ x: -1, y: 0 }),
-        ]) {
-          const np = Point({ x: p.x + dir.x, y: p.y + dir.y });
+        for (const dir of orthogonalNeighbours) {
+          const np = addPoints(p, dir);
           if (visited.has(np)) {
             continue;
           }
@@ -97,13 +90,8 @@ for (let y = 0; y < H; y++) {
           score += n;
           continue;
         }
-        for (const dir of [
-          Point({ x: 0, y: -1 }),
-          Point({ x: 1, y: 0 }),
-          Point({ x: 0, y: 1 }),
-          Point({ x: -1, y: 0 }),
-        ]) {
-          const np = Point({ x: p.x + dir.x, y: p.y + dir.y });
+        for (const dir of orthogonalNeighbours) {
+          const np = addPoints(p, dir);
           if (heights.has(np) && heights.get(np)! == height + 1) {
             if (next.has(np)) {
               next = next.set(np, next.get(np)! + n);
