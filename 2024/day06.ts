@@ -55,18 +55,6 @@ function nextPosition(pos: Point): Point {
   return addPoints(pos, directions[dirIndex]);
 }
 
-function turnRight(direction: Point): Point {
-  return directions[(dirNumber(direction) + 1) % directions.length];
-}
-
-function dirNumber(dirVector: Point): number {
-  return directions.findIndex((d) => d.equals(dirVector));
-}
-
-function currentDirection(): Point {
-  return directions[dirIndex];
-}
-
 let originalPath = Map<Point, Set<number>>();
 
 while (letters.has(pos)) {
