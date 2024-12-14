@@ -1,29 +1,13 @@
-import { Map, Record, RecordOf } from "immutable";
+import { Map } from "immutable";
 import { getInput } from "../inputs.ts";
 import * as Utils from "../utils.ts";
+import { Point, addPoints, mooreNeighbours } from "../point2d.ts";
 
 const input = await getInput(2024, 4);
 
 const lines = Utils.lines(input);
 
-type PointProps = { x: number; y: number };
-const Point = Record({ x: 0, y: 0 });
-type Point = RecordOf<PointProps>;
-
-function addPoints(a: Point, b: Point): Point {
-  return Point({ x: a.x + b.x, y: a.y + b.y });
-}
-
-const directions = [
-  Point({ x: 0, y: -1 }),
-  Point({ x: 1, y: 0 }),
-  Point({ x: 0, y: 1 }),
-  Point({ x: -1, y: 0 }),
-  Point({ x: -1, y: -1 }),
-  Point({ x: 1, y: -1 }),
-  Point({ x: 1, y: 1 }),
-  Point({ x: -1, y: 1 }),
-];
+const directions = mooreNeighbours;
 
 let letters = Map<Point, string>();
 
