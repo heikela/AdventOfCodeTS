@@ -8,6 +8,10 @@ export function addPoints(a: Point, b: Point): Point {
   return Point({ x: a.x + b.x, y: a.y + b.y });
 }
 
+export function subtractPoints(a: Point, b: Point): Point {
+  return Point({ x: a.x - b.x, y: a.y - b.y });
+}
+
 export const orthogonalNeighbours = [
   Point({ x: 0, y: -1 }),
   Point({ x: 1, y: 0 }),
