@@ -1,27 +1,12 @@
 import { getInput, getTestBlock } from "../inputs.ts";
 import * as Utils from "../utils.ts";
-import { Record, RecordOf, Map, Set } from "immutable";
+import { Map, Set } from "immutable";
+import { Point, addPoints, subtractPoints } from "../point2d.ts";
 
 const input = await getInput(2024, 8);
-//const input = await getTestBlock(2024, 8);
+// const input = await getTestBlock(2024, 8);
 
 const lines = Utils.lines(input);
-
-type PointProps = { x: number; y: number };
-const Point = Record({ x: 0, y: 0 });
-type Point = RecordOf<PointProps>;
-
-function addPoints(a: Point, b: Point): Point {
-  return Point({ x: a.x + b.x, y: a.y + b.y });
-}
-
-function subtractPoints(a: Point, b: Point): Point {
-  return Point({ x: a.x - b.x, y: a.y - b.y });
-}
-
-function negate(p: Point): Point {
-  return Point({ x: -p.x, y: -p.y });
-}
 
 let antennae = Map<string, Point[]>();
 
@@ -48,27 +33,33 @@ const W =
     .reduce((acc, x) => Math.max(acc, x), 0) + 1;
 
 let antiNodes = Set<Point>();
+let antiNodes2 = Set<Point>();
 
 for (const [antenna, points] of antennae) {
-  console.log(`Processing ${points.length} antennae of type ${antenna}`);
   for (let i = 0; i < points.length; i++) {
     for (let j = 0; j < points.length; j++) {
       if (i == j) {
         continue;
       }
       const vector = subtractPoints(points[j], points[i]);
-      let antiNode = points[i];
+      let antiNode = points[j];
+      let steps = 0;
       while (
         antiNode.x >= 0 &&
         antiNode.y >= 0 &&
         antiNode.x < W &&
         antiNode.y < H
       ) {
-        antiNodes = antiNodes.add(antiNode);
+        antiNodes2 = antiNodes2.add(antiNode);
+        if (steps == 1) {
+          antiNodes = antiNodes.add(antiNode);
+        }
         antiNode = addPoints(antiNode, vector);
+        steps++;
       }
     }
   }
 }
 
 console.log(`${antiNodes.size}`);
+console.log(`${antiNodes2.size}`);
