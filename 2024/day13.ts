@@ -2,21 +2,10 @@ import { getInput, getTestBlock } from "../inputs.ts";
 
 import * as Utils from "../utils.ts";
 
+import { Point, addPoints } from "../point2d.ts";
+
 const lines = Utils.lines(await getInput(2024, 13));
 //const lines = Utils.lines(await getTestBlock(2024, 13, 0));
-
-type Point = {
-  x: number;
-  y: number;
-};
-
-function addPoints(a: Point, b: Point): Point {
-  return { x: a.x + b.x, y: a.y + b.y };
-}
-
-function equals(a: Point, b: Point): boolean {
-  return a.x === b.x && a.y === b.y;
-}
 
 type Machine = {
   aDir: Point;
@@ -29,7 +18,7 @@ let machines: Machine[] = [];
 function parsePoint(s: string): Point {
   const [_, coords, ...rest] = s.split(":");
   const [x, y] = coords.split(",").map((x) => parseInt(x.trim().substring(2)));
-  return { x, y };
+  return Point({ x, y });
 }
 
 for (let l = 0; l < lines.length; l += 4) {
@@ -44,13 +33,13 @@ function solve(machine: Machine): number {
   const bDir = machine.bDir;
   const prizePos = machine.prizePos;
 
-  let startPos = { x: 0, y: 0 };
+  let startPos = Point({ x: 0, y: 0 });
   let rowStartPos = startPos;
 
   for (let a = 0; a <= 100; ++a) {
     let pos = rowStartPos;
     for (let b = 0; b <= 100; ++b) {
-      if (equals(pos, prizePos)) {
+      if (pos.equals(prizePos)) {
         return 3 * a + b;
       }
       pos = addPoints(pos, bDir);
@@ -75,9 +64,10 @@ function solve2(machine: Machine): number {
 
   let aDir = machine.aDir;
   let bDir = machine.bDir;
-  let pos = machine.prizePos;
-  pos.x += 10000000000000;
-  pos.y += 10000000000000;
+  let pos = addPoints(
+    machine.prizePos,
+    Point({ x: 10000000000000, y: 10000000000000 })
+  );
 
   let row1 = [aDir.x, bDir.x, pos.x];
   let row2 = [aDir.y, bDir.y, pos.y];
@@ -134,9 +124,12 @@ function solve2(machine: Machine): number {
   return 3 * a + b;
 }
 
-let cost = 0;
+let cost1 = 0;
+let cost2 = 0;
 for (let machine of machines) {
-  cost += solve2(machine);
+  cost1 += solve(machine);
+  cost2 += solve2(machine);
 }
 
-console.log(`${cost}`);
+console.log(`${cost1}`);
+console.log(`${cost2}`);
