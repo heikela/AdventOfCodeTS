@@ -2,6 +2,8 @@ import { getInput, getTestBlock } from "../inputs.ts";
 import * as Utils from "../utils.ts";
 import { Set, Record, RecordOf } from "immutable";
 
+import { Point } from "../point2d.ts";
+
 const input = await getInput(2024, 14);
 const H = 103;
 const W = 101;
@@ -73,10 +75,6 @@ for (const line of lines) {
   positions.push([x, y]);
   velocities.push([dx, dy]);
 }
-
-type PointProps = { x: number; y: number };
-const Point = Record({ x: 0, y: 0 });
-type Point = RecordOf<PointProps>;
 
 function countContiguousRegions(positions: Set<Point>): number {
   let regions = 0;
