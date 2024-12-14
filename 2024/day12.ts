@@ -74,33 +74,17 @@ for (let y = 0; y < H; y++) {
       area++;
       for (const dir of directions) {
         const np = Point({ x: p.x + dir.x, y: p.y + dir.y });
-        //        if (!visited.has(np)) {
         frontier = frontier.push(Step({ from: p, to: np }));
-        //        }
       }
     }
     if (area > 0) {
       scoreSum += area * perimeter;
-      //      console.log(`${type}: ${area} * ${perimeter} = ${area * perimeter}`);
       let visitedEdge = Set<Step>();
       let sides = 0;
-      //      console.log(`Traversing edges of area of type ${type}`);
       for (const possibleNewSide of edgeSet) {
-        /*        console.log(
-          `Edge: ${possibleNewSide.from.x},${possibleNewSide.from.y} -> ${possibleNewSide.to.x},${possibleNewSide.to.y}`
-        );*/
         if (visitedEdge.has(possibleNewSide)) {
-          //          console.log(`Already counted`);
           continue;
         }
-        /*        console.log(
-          `New side (not found in a visited edge set of size ${visitedEdge.size})`
-        );
-        for (const e of visitedEdge) {
-          console.log(
-            `Visited edge: ${e.from.x},${e.from.y} -> ${e.to.x},${e.to.y}`
-          );
-        }*/
         sides++;
         let edgeFrontier = List<Step>();
         edgeFrontier = edgeFrontier.push(possibleNewSide);
@@ -120,15 +104,12 @@ for (let y = 0; y < H; y++) {
           for (const dir of relevantDirections) {
             const newStep = translateStep(edge, dir);
             if (edgeSet.has(newStep)) {
-              //              console.log(`Found adjacent edge element ${newStep}`);
               edgeFrontier = edgeFrontier.push(newStep);
             }
           }
         }
       }
       scoreSum2 += area * sides;
-      //      console.log(`${type}: ${area} * ${sides} = ${area * sides}`);
-      //      console.log(`======`);
     }
   }
 }
