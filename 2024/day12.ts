@@ -4,18 +4,12 @@ import * as Utils from "../utils.ts";
 
 import { Map, Set, List, Record, RecordOf } from "immutable";
 
+import { Point, addPoints, orthogonalNeighbours } from "../point2d.ts";
+
 const input = await getInput(2024, 12);
 //const input = await getTestBlock(2024, 12, 3);
 
 const lines = Utils.lines(input);
-
-type PointProps = { x: number; y: number };
-const Point = Record({ x: 0, y: 0 });
-type Point = RecordOf<PointProps>;
-
-function addPoints(a: Point, b: Point): Point {
-  return Point({ x: a.x + b.x, y: a.y + b.y });
-}
 
 type StepProps = { from: Point; to: Point };
 const Step = Record({ from: Point({ x: 0, y: 0 }), to: Point({ x: 0, y: 0 }) });
@@ -28,12 +22,7 @@ function translateStep(step: Step, delta: Point): Step {
   });
 }
 
-const directions = [
-  Point({ x: 0, y: -1 }),
-  Point({ x: 1, y: 0 }),
-  Point({ x: 0, y: 1 }),
-  Point({ x: -1, y: 0 }),
-];
+const directions = orthogonalNeighbours;
 
 let W = 0;
 let H = 0;
