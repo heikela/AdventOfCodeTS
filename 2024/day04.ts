@@ -1,4 +1,4 @@
-import { Map } from "immutable";
+import { Seq } from "immutable";
 import { getInput } from "../inputs.ts";
 import * as Utils from "../utils.ts";
 import { Point, addPoints, mooreNeighbours } from "../point2d.ts";
@@ -27,14 +27,12 @@ function getWord(start: Point, dir: Point, len: number = 4): string {
   return result;
 }
 
-const result = Utils.range(0, H)
-  .flatMap((y) =>
-    Utils.range(0, W).flatMap((x) =>
-      directions.map((dir) => {
-        const word = getWord(Point({ x, y }), dir);
-        return word == "XMAS" ? 1 : 0;
-      })
-    )
+const result = Seq(letters.keys())
+  .flatMap((p) =>
+    directions.map((dir) => {
+      const word = getWord(p, dir);
+      return word == "XMAS" ? 1 : 0;
+    })
   )
   .reduce<number>((acc, x) => acc + x, 0);
 
