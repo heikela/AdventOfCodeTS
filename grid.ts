@@ -16,16 +16,20 @@ export class Grid<T> {
     }
   }
 
-  set(point: Point, value: T): void {
-    this._data = this._data.set(point, value);
+  set(point: Point, value: T): Grid<T> {
+    const newGrid = new Grid<T>();
+    newGrid._data = this._data.set(point, value);
+    return newGrid;
   }
 
   has(point: Point): boolean {
     return this._data.has(point);
   }
 
-  delete(point: Point): void {
-    this._data = this._data.delete(point);
+  delete(point: Point): Grid<T> {
+    const newGrid = new Grid<T>();
+    newGrid._data = this._data.delete(point);
+    return newGrid;
   }
 
   keys(): Iterable<Point> {
@@ -45,21 +49,25 @@ export class Grid<T> {
     mapper: (char: string, x: number, y: number) => T
   ): Grid<T> {
     let grid = new Grid<T>();
-    lines.map((line, y) => {
-      line.split("").map((char, x) => {
-        grid.set(Point({ x, y }), mapper(char, x, y));
-      });
-    });
+    grid._data = Map(
+      lines.flatMap((line, y) =>
+        line
+          .split("")
+          .map<[Point, T]>((char, x) => [Point({ x, y }), mapper(char, x, y)])
+      )
+    );
     return grid;
   }
 
   static fromLines(lines: string[]): Grid<string> {
     let grid = new Grid<string>();
-    lines.forEach((line, y) => {
-      line.split("").forEach((char, x) => {
-        grid.set(Point({ x, y }), char);
-      });
-    });
+    grid._data = Map(
+      lines.flatMap((line, y) =>
+        line
+          .split("")
+          .map<[Point, string]>((char, x) => [Point({ x, y }), char])
+      )
+    );
     return grid;
   }
 

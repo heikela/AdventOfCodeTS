@@ -1,10 +1,11 @@
 import { Seq } from "immutable";
-import { getInput } from "../inputs.ts";
+import { getInput, getTestBlock } from "../inputs.ts";
 import * as Utils from "../utils.ts";
 import { Point, addPoints, mooreNeighbours } from "../point2d.ts";
 import { Grid } from "../grid.ts";
 
 const input = await getInput(2024, 4);
+//const input = await getTestBlock(2024, 4, 1);
 
 const lines = Utils.lines(input);
 
