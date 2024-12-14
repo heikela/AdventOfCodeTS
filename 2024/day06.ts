@@ -1,6 +1,7 @@
 import { getInput } from "../inputs.ts";
 import * as Utils from "../utils.ts";
-import { Map, Set } from "immutable";
+import { Map, Seq, Set } from "immutable";
+import { Grid } from "../grid.ts";
 
 import { Point, addPoints, orthogonalNeighbours } from "../point2d.ts";
 
@@ -9,37 +10,22 @@ const lines = Utils.lines(input);
 
 const directions = orthogonalNeighbours;
 
-let letters = Map<Point, string>();
+let letters = Grid.fromLines(lines);
 
-let start = Point({ x: 0, y: 0 });
+let start = Seq(letters.keys()).find((p) => letters.getOrElse(p, "") == "^")!;
 let dirIndex = 0;
-
-lines.map((line, y) => {
-  line.split("").map((char, x) => {
-    letters = letters.set(Point({ x, y }), char);
-    if (char === "^") {
-      start = Point({ x, y });
-    }
-  });
-});
 
 let pos = start;
 
-const H =
-  Array.from(letters.keys())
-    .map((p) => p.y)
-    .reduce((acc, x) => Math.max(acc, x), 0) + 1;
-const W =
-  Array.from(letters.keys())
-    .map((p) => p.x)
-    .reduce((acc, x) => Math.max(acc, x), 0) + 1;
+const H = letters.height();
+const W = letters.width();
 
 let visited = Set<Point>();
 
 visited = visited.add(pos);
 
-function blocked(p: Point, area: Map<Point, string>): boolean {
-  return area.has(p) && area.get(p) === "#";
+function blocked(p: Point, area: Grid<string>): boolean {
+  return area.getOrElse(p, "") === "#";
 }
 
 function nextDirection(): Point {
@@ -78,7 +64,6 @@ function getsStuck(start: Point, newBlock: Point): boolean {
   let steps = 0;
 
   if (!originalPath.has(newBlock)) {
-    //    console.log(`Not on original path, skipping`);
     return false;
   }
 
@@ -99,26 +84,20 @@ function getsStuck(start: Point, newBlock: Point): boolean {
     steps++;
   }
   if (area.has(currentPos)) {
-    //    console.log(`Loop detected after ${steps} steps`);
     return true;
   } else {
-    //    console.log(`Escaped after ${steps} steps`);
     return false;
   }
 }
 
 let result = 0;
-for (let y = 0; y < H; y++) {
-  for (let x = 0; x < W; x++) {
-    const original = letters.get(Point({ x, y }));
-    if (original == "#" || original == "^") {
-      continue;
-    }
-    if (getsStuck(start, Point({ x, y }))) {
-      result++;
-    }
+for (const [p, original] of letters.entries()) {
+  if (original == "#" || original == "^") {
+    continue;
   }
-  console.log(`Row ${y} done`);
+  if (getsStuck(start, p)) {
+    result++;
+  }
 }
 
 console.log(result);
