@@ -102,4 +102,23 @@ export class Grid<T> {
       .map((p) => p.y)
       .reduce((acc, x) => Math.min(acc, x), Infinity);
   }
+
+  print(mapper: (elem: T) => string): void {
+    const W = this.width();
+    const H = this.height();
+    const minX = this.minX();
+    const minY = this.minY();
+    console.log(`Grid: ${W}x${H}`);
+    for (let y = 0; y < H; y++) {
+      let line = "";
+      for (let x = 0; x < W; x++) {
+        if (this._data.has(Point({ x: x + minX, y: y + minY }))) {
+          line += mapper(this._data.get(Point({ x: x + minX, y: y + minY }))!);
+        } else {
+          line += " ";
+        }
+      }
+      console.log(line);
+    }
+  }
 }
