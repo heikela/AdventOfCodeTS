@@ -4,6 +4,7 @@
     "jsr:@std/assert@1": "1.0.8",
     "jsr:@std/dotenv@~0.225.2": "0.225.2",
     "jsr:@std/internal@^1.0.5": "1.0.5",
+    "npm:@datastructures-js/priority-queue@^6.3.1": "6.3.1",
     "npm:immutable@^5.0.3": "5.0.3"
   },
   "jsr": {
@@ -21,6 +22,15 @@
     }
   },
   "npm": {
+    "@datastructures-js/heap@4.3.3": {
+      "integrity": "sha512-UcUu/DLh/aM4W3C8zZfwxxm6/6FIZUlm3mcAXuNOCa6Aj4iizNvNXQyb8DjZQH2jKSQbMRyNlngP6TPimuGjpQ=="
+    },
+    "@datastructures-js/priority-queue@6.3.1": {
+      "integrity": "sha512-eoxkWql/j0VJ0UFMFTpnyJz4KbEEVQ6aZ/JuJUgenu0Im4tYKylAycNGsYCHGXiVNEd7OKGVwfx1Ac3oYkuu7A==",
+      "dependencies": [
+        "@datastructures-js/heap"
+      ]
+    },
     "immutable@5.0.3": {
       "integrity": "sha512-P8IdPQHq3lA1xVeBRi5VPqUm5HDgKnx0Ru51wZz5mjxHr5n3RWhjIpOFU7ybkUxfB+5IToy+OLaHYDBIWsv+uw=="
     }
@@ -29,6 +39,7 @@
     "dependencies": [
       "jsr:@std/assert@1",
       "jsr:@std/dotenv@~0.225.2",
+      "npm:@datastructures-js/priority-queue@^6.3.1",
       "npm:immutable@^5.0.3"
     ]
   }
