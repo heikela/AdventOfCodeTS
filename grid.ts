@@ -75,7 +75,7 @@ export class Grid<T> {
     const [min, max] = Seq(this._data.keys())
       .map((p) => p.x)
       .reduce(
-        (acc, x) => [Math.min(acc[0], x), Math.max(acc[0], x)],
+        (acc, x) => [Math.min(acc[0], x), Math.max(acc[1], x)],
         [Infinity, -Infinity]
       );
     return max - min + 1;
@@ -85,7 +85,7 @@ export class Grid<T> {
     const [min, max] = Seq(this._data.keys())
       .map((p) => p.y)
       .reduce(
-        (acc, x) => [Math.min(acc[0], x), Math.max(acc[0], x)],
+        (acc, x) => [Math.min(acc[0], x), Math.max(acc[1], x)],
         [Infinity, -Infinity]
       );
     return max - min + 1;
