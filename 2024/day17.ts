@@ -70,29 +70,57 @@ function runProgram(
     switch (instr) {
       case 0:
         a = Math.floor(a / Math.pow(2, comboOperand(operand)));
+        if (a < 0) {
+          throw new Error("Negative a in case 0");
+        }
         break;
       case 1:
-        b = b ^ operand;
+        b = Number(BigInt(b) ^ BigInt(operand));
+        if (b < 0) {
+          throw new Error("Negative b in case 1");
+        }
         break;
       case 2:
         b = comboOperand(operand) % 8;
+        if (b < 0) {
+          throw new Error("Negative b in case 2");
+        }
         break;
       case 3:
         if (a != 0) {
           ip = operand;
         }
         break;
-      case 4:
-        b = b ^ c;
+      case 4: {
+        let oldB = b;
+        b = Number(BigInt(b) ^ BigInt(c));
+        if (b < 0) {
+          console.log(`b: ${oldB}, c: ${c} -> ${b}`);
+          throw new Error("Negative b in case 4");
+        }
+
         break;
+      }
       case 5:
+        if (comboOperand(operand) < 0) {
+          throw new Error("Negative operand in case 5");
+        }
+
         output.push(comboOperand(operand) % 8);
         break;
       case 6:
         b = Math.floor(a / Math.pow(2, comboOperand(operand)));
+        if (b < 0) {
+          throw new Error("Negative b in case 6");
+        }
+
         break;
       case 7:
         c = Math.floor(a / Math.pow(2, comboOperand(operand)));
+        if (c < 0) {
+          throw new Error("Negative c in case 7");
+        }
+
         break;
     }
   }
@@ -120,7 +148,7 @@ const output = runProgram(program);
 console.log(output.join(","));
 
 let newA = 0;
-
+/*
 while (true) {
   if (newA % 10000 == 0) {
     console.log(`Trying ${newA}`);
@@ -138,4 +166,122 @@ while (true) {
     //    console.log(`At ${newA} we have an error: ${e.message}`);
     newA++;
   }
+}
+*/
+function comboOperantToString(op: number) {
+  if (op >= 0 && op <= 3) {
+    return `${op}`;
+  }
+  if (op == 4) {
+    return "a";
+  }
+  if (op == 5) {
+    return "b";
+  }
+  if (op == 6) {
+    return "c";
+  }
+  throw new Error(`Invalid operand: ${op}`);
+}
+
+function printInstruction(instr: number, operand: number) {
+  switch (instr) {
+    case 0:
+      console.log(`a = a / 2^${comboOperantToString(operand)}`);
+      break;
+    case 1:
+      console.log(`b = b XOR ${operand}`);
+      break;
+    case 2:
+      console.log(`b = ${comboOperantToString(operand)}`);
+      break;
+    case 3:
+      console.log(`if a != 0 then ip = ${operand}`);
+      break;
+    case 4:
+      console.log(`b = b XOR c`);
+      break;
+    case 5:
+      console.log(`output ${comboOperantToString(operand)}`);
+      break;
+    case 6:
+      console.log(`b = a / 2^${comboOperantToString(operand)}`);
+      break;
+    case 7:
+      console.log(`c = a / 2^${comboOperantToString(operand)}`);
+      break;
+  }
+}
+
+function printProgram(program: number[]) {
+  for (let i = 0; i < program.length; i += 2) {
+    printInstruction(program[i], program[i + 1]);
+  }
+}
+
+printProgram(program);
+
+/*
+function solveNext3Bits(upperBitsOfA: bigint, targetOutput: number) {
+  let aCandidate = upperBitsOfA * BigInt(8);
+  let upperBound = (upperBitsOfA + BigInt(1)) * BigInt(8);
+  while (aCandidate < upperBound) {
+    let a = aCandidate;
+    let b = a;
+    b = b ^ BigInt(5);
+    let c = a >> b;
+    b = b ^ BigInt(6);
+    a = a >> BigInt(3);
+    b = b ^ c;
+    const output = b % BigInt(8);
+    if (output == BigInt(targetOutput)) {
+      return aCandidate;
+    }
+    ++aCandidate;
+  }
+  throw new Error("No solution found");
+}
+  */
+
+function solveNext3Bits(upperBitsOfA: number, targetOutput: number): number[] {
+  let aCandidate = upperBitsOfA * 8;
+  let upperBound = aCandidate + 8;
+  let results = [];
+  while (aCandidate < upperBound) {
+    let output = runProgram(program, aCandidate)[0];
+    if (output == targetOutput) {
+      results.push(aCandidate);
+    }
+    ++aCandidate;
+  }
+  return results;
+}
+
+let possibleUpperBits = [0];
+for (let i = program.length - 1; i >= 0; i--) {
+  possibleUpperBits = possibleUpperBits.flatMap((n) =>
+    solveNext3Bits(n, program[i])
+  );
+  console.log(
+    `Possible upper bits: ${possibleUpperBits.map((x) => x.toString(8))}`
+  );
+  const smallest = Math.min(...possibleUpperBits);
+  console.log(smallest);
+  if (possibleUpperBits.length >= 1) {
+    console.log(runProgram(program, smallest));
+  }
+  //  console.log(`Upper bits of A: ${upperBitsOfA}`);
+  // console.log(`Looking for ${program[i]}`);
+  // console.log(
+  //   `Running the program with A = ${upperBitsOfA} results in ${runProgram(
+  //     program,
+  //     Number(upperBitsOfA)
+  //   )}`
+  // );
+}
+
+if (possibleUpperBits.length >= 1) {
+  const smallest = Math.min(...possibleUpperBits);
+  console.log(smallest);
+  console.log(runProgram(program, smallest));
 }
