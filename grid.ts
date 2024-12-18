@@ -1,11 +1,17 @@
 import { Point } from "./point2d.ts";
-import { Map, Seq } from "immutable";
+import { Map, Set, Seq } from "immutable";
 
 export class Grid<T> {
   private _data: Map<Point, T>;
 
   constructor() {
     this._data = Map<Point, T>();
+  }
+
+  static fromSet<T>(set: Set<Point>, value: T): Grid<T> {
+    let grid = new Grid<T>();
+    grid._data = Map(set.toArray().map((p) => [p, value]));
+    return grid;
   }
 
   getOrElse(point: Point, sentinel: T): T {
