@@ -4,7 +4,7 @@ import * as Utils from "../utils.ts";
 import { Map, Set, Seq, List } from "immutable";
 
 let lines = Utils.lines(await getInput(2024, 22));
-lines = Utils.lines(await getTestBlock(2024, 22, 5));
+//lines = Utils.lines(await getTestBlock(2024, 22, 5));
 
 const initials = lines.map((line) => BigInt(parseInt(line)));
 
@@ -70,41 +70,27 @@ for (let initial of initials) {
   let n = initial;
   let changes = oneDayChanges(n);
   let values = oneDayValues(n);
-  let orderedPositions = Map<number, List<number>>();
-  for (let delta = -9; delta <= 9; ++delta) {
-    orderedPositions = orderedPositions.set(delta, List<number>());
-  }
-  for (let i = 0; i < changes.length; ++i) {
-    let change = changes[i];
-    orderedPositions = orderedPositions.set(
-      change,
-      orderedPositions.get(change)!.push(i)
-    );
-  }
-  let unOrderedPositions = orderedPositions.mapEntries(([delta, positions]) => {
-    return [delta, Set(positions)];
-  });
-  for (let instruction of instructions) {
-    for (let startIdx of orderedPositions.get(instruction.get(0)!)!) {
-      if (
-        unOrderedPositions.get(instruction.get(1)!)!.has(startIdx + 1) &&
-        unOrderedPositions.get(instruction.get(2)!)!.has(startIdx + 2) &&
-        unOrderedPositions.get(instruction.get(3)!)!.has(startIdx + 3)
-      ) {
-        proceeds = proceeds.set(
-          instruction,
-          proceeds.get(instruction)! + values[startIdx + 3]
-        );
-        if (instruction.equals(exampleInstr)) {
-          console.log(
-            `Example instruction ${instruction} found at index ${startIdx} leading to ${
-              values[startIdx + 3]
-            } bananas)`
-          );
-        }
-        break;
-      }
+  let alreadySeen = Set<List<number>>();
+  for (let idx = 3; idx < changes.length; ++idx) {
+    let instruction = List([
+      changes[idx - 3],
+      changes[idx - 2],
+      changes[idx - 1],
+      changes[idx],
+    ]);
+    if (alreadySeen.has(instruction)) {
+      continue;
     }
+    alreadySeen = alreadySeen.add(instruction);
+    proceeds = proceeds.set(
+      instruction,
+      proceeds.get(instruction)! + values[idx]
+    );
+    // if (instruction.equals(exampleInstr)) {
+    //   console.log(
+    //     `Example instruction ${instruction} found ending at index ${idx} leading to ${values[idx]} bananas)`
+    //   );
+    // }
   }
 }
 
