@@ -22,6 +22,10 @@ export class Grid<T> {
     }
   }
 
+  get(point: Point): T | undefined {
+    return this._data.get(point);
+  }
+
   set(point: Point, value: T): Grid<T> {
     const newGrid = new Grid<T>();
     newGrid._data = this._data.set(point, value);
